@@ -25,6 +25,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -40,25 +43,11 @@ jobs:
           key: windows-cargo-${{ hashFiles('src-tauri/Cargo.lock') }}
           restore-keys: windows-cargo-
 
-      - name: Detect package manager and install JS dependencies
-        shell: bash
-        run: |
-          if command -v bun &>/dev/null; then
-            echo "PKG=bun" >> "$GITHUB_ENV"
-            bun install
-          else
-            echo "PKG=npm" >> "$GITHUB_ENV"
-            npm install
-          fi
+      - name: Install JS dependencies
+        run: bun install
 
       - name: Build Tauri app (Windows)
-        shell: bash
-        run: |
-          if [ "$PKG" = "bun" ]; then
-            bun run tauri build --target x86_64-pc-windows-msvc
-          else
-            npm run tauri build --  --target x86_64-pc-windows-msvc
-          fi
+        run: bun run tauri build --target x86_64-pc-windows-msvc
 
       - name: Collect installer artifacts
         shell: bash
@@ -104,13 +93,16 @@ jobs:
 
       - name: Install Freedesktop SDK/Platform runtimes
         run: |
-          flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install -y flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08
+          flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          flatpak --user install -y flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -127,23 +119,11 @@ jobs:
           key: linux-cargo-${{ hashFiles('src-tauri/Cargo.lock') }}
           restore-keys: linux-cargo-
 
-      - name: Detect package manager and install JS dependencies
-        run: |
-          if command -v bun &>/dev/null; then
-            echo "PKG=bun" >> "$GITHUB_ENV"
-            bun install
-          else
-            echo "PKG=npm" >> "$GITHUB_ENV"
-            npm install
-          fi
+      - name: Install JS dependencies
+        run: bun install
 
       - name: Build Tauri app (Linux)
-        run: |
-          if [ "$PKG" = "bun" ]; then
-            bun run tauri build --target x86_64-unknown-linux-gnu
-          else
-            npm run tauri build -- --target x86_64-unknown-linux-gnu
-          fi
+        run: bun run tauri build --target x86_64-unknown-linux-gnu
 
       - name: Collect raw bundle artifacts
         run: |
@@ -155,11 +135,11 @@ jobs:
       - name: Build Flatpak installer
         run: |
           mkdir -p install/linux
-          flatpak-builder --force-clean \
+          flatpak-builder --user --force-clean \
             --repo=install/linux/repo \
             install/linux/build \
             src/installers/linux/com.dropshot.app.yml
-          flatpak build-bundle install/linux/repo \
+          flatpak --user build-bundle install/linux/repo \
             install/linux/dropshot.flatpak \
             com.dropshot.app
 
