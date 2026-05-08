@@ -1,12 +1,12 @@
 name: Build Installers
 
-# Trigger on releases and on every push to master (temporary — for testing only).
+# Trigger on releases and on every push to main.
 on:
   release:
     types: [published]
   push:
     branches:
-      - master   # TODO: remove this trigger once CI testing is complete
+      - main
 
 jobs:
   # ─────────────────────────────────────────────────────────────────
