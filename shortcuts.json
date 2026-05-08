@@ -1,0 +1,22 @@
+[
+  {
+    "name": "VS Code",
+    "path": "C:\\Users\\<username>\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+    "icon": "vscode.png"
+  },
+  {
+    "name": "Chrome",
+    "path": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "icon": "chrome.png"
+  },
+  {
+    "name": "Terminal",
+    "path": "C:\\Windows\\System32\\wt.exe",
+    "icon": "terminal.png"
+  },
+  {
+    "name": "Explorer",
+    "path": "C:\\Windows\\explorer.exe",
+    "icon": "explorer.png"
+  }
+]

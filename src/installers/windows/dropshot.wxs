@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DropShot — WiX v3 installer fragment
+  ─────────────────────────────────────────────────────────────────────────────
+  This file is a WiX source fragment that Tauri merges with its auto-generated
+  WiX scaffolding during `make build-windows` / `make install-windows`.
+
+  To activate this fragment:
+    1. Copy (or symlink) this file to  src-tauri/wix/dropshot.wxs
+    2. Tauri automatically picks up all *.wxs files placed in src-tauri/wix/
+
+  Reference: https://tauri.app/v1/guides/building/windows/#customizing-the-wix-installer
+
+  Customizes:
+    - Product metadata (manufacturer, support URL, help URL)
+    - User data: seeds dropshot.json into %APPDATA%\dropshot\ on first install
+    - Desktop shortcut creation (opt-in, commented out)
+    - Registry key for startup at login (opt-in, commented out)
+
+  Data file target path:
+    %APPDATA%\dropshot\dropshot.json
+    (HKCU — per-user; not removed on uninstall to preserve user config)
+-->
+
+<?define Manufacturer = "DropShot" ?>
+<?define SupportURL   = "https://github.com/your-username/dropshot/issues" ?>
+<?define HelpURL      = "https://github.com/your-username/dropshot#readme" ?>
+<?define UpdateURL    = "https://github.com/your-username/dropshot/releases" ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/2008/Util">
+
+  <Fragment>
+    <!-- ── Product properties ───────────────────────────────────────────── -->
+    <Property Id="ARPURLINFOABOUT"  Value="$(var.HelpURL)" />
+    <Property Id="ARPURLINFOUPDATE" Value="$(var.UpdateURL)" />
+    <Property Id="ARPHELPLINK"      Value="$(var.SupportURL)" />
+    <Property Id="ARPNOMODIFY"      Value="1" />
+
+    <!-- ── User data directory: %APPDATA%\dropshot\ ─────────────────────── -->
+    <!--
+      Seeds the default dropshot.json into the current user's AppData on
+      first install. The file is NOT removed on uninstall, preserving the
+      user's configuration across reinstalls and upgrades.
+      The app reads/writes this file at runtime (in production builds).
+    -->
+    <Directory Id="AppDataDropShot" Name="dropshot">
+      <!-- This resolves to %APPDATA%\dropshot\ -->
+    </Directory>
+
+    <DirectoryRef Id="AppDataFolder">
+      <Directory Id="AppDataDropShotDir" Name="dropshot">
+        <Component Id="UserDataComponent"
+                   Guid="C3D4E5F6-A7B8-9012-CDEF-012345678902"
+                   KeyPath="no">
+          <!-- Install default dropshot.json only if not already present -->
+          <File Id="DropshotJson"
+                Source="$(var.SourceDir)\..\..\..\data\dropshot.json"
+                Name="dropshot.json"
+                KeyPath="yes" />
+          <!-- Do NOT add RemoveFile here — preserve user config on uninstall -->
+          <RegistryValue Root="HKCU"
+                         Key="Software\DropShot"
+                         Name="DataDir"
+                         Type="string"
+                         Value="[AppDataDropShotDir]" />
+        </Component>
+      </Directory>
+    </DirectoryRef>
+
+    <!-- ── Desktop shortcut ─────────────────────────────────────────────── -->
+    <!--
+      Uncomment the block below to also create a desktop shortcut.
+
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="DesktopShortcutComponent"
+                 Guid="A1B2C3D4-E5F6-7890-ABCD-EF1234567890">
+        <Shortcut Id="DesktopShortcut"
+                  Name="DropShot"
+                  Description="Quake-style app launcher"
+                  Target="[INSTALLDIR]dropshot.exe"
+                  WorkingDirectory="INSTALLDIR"
+                  Icon="ProductIco" />
+        <RemoveFolder Id="RemoveDesktopFolder" On="uninstall" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\DropShot"
+                       Name="DesktopShortcut"
+                       Type="integer" Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    -->
+
+    <!-- ── Registry: run at startup (optional) ──────────────────────────── -->
+    <!--
+      Uncomment to launch DropShot automatically when the user logs in.
+
+    <DirectoryRef Id="INSTALLDIR">
+      <Component Id="StartupRegistryComponent"
+                 Guid="B2C3D4E5-F6A7-8901-BCDE-F12345678901">
+        <RegistryValue Root="HKCU"
+                       Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+                       Name="DropShot"
+                       Type="string"
+                       Value="[INSTALLDIR]dropshot.exe"
+                       KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    -->
+  </Fragment>
+
+</Wix>
+
+  DropShot — WiX v3 installer fragment
+  ─────────────────────────────────────────────────────────────────────────────
+  This file is a WiX source fragment that Tauri merges with its auto-generated
+  WiX scaffolding during `make build-windows` / `make install-windows`.
+
+  To activate this fragment:
+    1. Copy (or symlink) this file to  src-tauri/wix/dropshot.wxs
+    2. Tauri automatically picks up all *.wxs files placed in src-tauri/wix/
+
+  Reference: https://tauri.app/v1/guides/building/windows/#customizing-the-wix-installer
+
+  Customizes:
+    - Product metadata (manufacturer, support URL, help URL)
+    - Desktop shortcut creation
+    - Start Menu folder name
+    - Registry key for "Open DropShot" context-menu hook (optional)
+-->
+
+<?define Manufacturer = "DropShot" ?>
+<?define SupportURL   = "https://github.com/your-username/dropshot/issues" ?>
+<?define HelpURL      = "https://github.com/your-username/dropshot#readme" ?>
+<?define UpdateURL    = "https://github.com/your-username/dropshot/releases" ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/2008/Util">
+
+  <Fragment>
+    <!-- ── Product properties ───────────────────────────────────────────── -->
+    <Property Id="ARPURLINFOABOUT"  Value="$(var.HelpURL)" />
+    <Property Id="ARPURLINFOUPDATE" Value="$(var.UpdateURL)" />
+    <Property Id="ARPHELPLINK"      Value="$(var.SupportURL)" />
+    <Property Id="ARPNOMODIFY"      Value="1" />
+
+    <!-- ── Desktop shortcut ─────────────────────────────────────────────── -->
+    <!--
+      Tauri creates a Start Menu shortcut automatically.
+      Uncomment the block below to also create a desktop shortcut.
+
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="DesktopShortcutComponent"
+                 Guid="A1B2C3D4-E5F6-7890-ABCD-EF1234567890">
+        <Shortcut Id="DesktopShortcut"
+                  Name="DropShot"
+                  Description="Quake-style app launcher"
+                  Target="[INSTALLDIR]dropshot.exe"
+                  WorkingDirectory="INSTALLDIR"
+                  Icon="ProductIco" />
+        <RemoveFolder Id="RemoveDesktopFolder" On="uninstall" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\DropShot"
+                       Name="DesktopShortcut"
+                       Type="integer" Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    -->
+
+    <!-- ── Registry: run at startup (optional) ──────────────────────────── -->
+    <!--
+      Uncomment to launch DropShot automatically when the user logs in.
+
+    <DirectoryRef Id="INSTALLDIR">
+      <Component Id="StartupRegistryComponent"
+                 Guid="B2C3D4E5-F6A7-8901-BCDE-F12345678901">
+        <RegistryValue Root="HKCU"
+                       Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+                       Name="DropShot"
+                       Type="string"
+                       Value="[INSTALLDIR]dropshot.exe"
+                       KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    -->
+  </Fragment>
+
+</Wix>

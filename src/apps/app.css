@@ -1,0 +1,223 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   DropShot — Global Styles
+   All values sourced from docs/graphic_design.md. Do NOT add hardcoded hex
+   colors or pixel values that aren't defined in this file or that doc.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Google Fonts are loaded in index.html ── */
+
+/* ── Design Tokens ── */
+:root[data-theme="dark"] {
+  --color-bg:              #12141f;
+  --color-surface:         #1a1d2e;
+  --color-surface-raised:  #23273d;
+  --color-border:          #2e3450;
+  --color-accent:          #4f8ef7;
+  --color-accent-deep:     #2355c9;
+  --color-accent-glow:     #7ab0ff;
+  --color-warm:            #f7c948;
+  --color-warm-deep:       #e07b20;
+  --color-volt:            #c8f74f;
+  --color-text:            #f0f2ff;
+  --color-text-muted:      #8b90b0;
+  --color-text-disabled:   #555a78;
+}
+
+:root[data-theme="light"] {
+  --color-bg:              #f4f5fb;
+  --color-surface:         #ffffff;
+  --color-surface-raised:  #eaecf7;
+  --color-border:          #cdd0e3;
+  --color-accent:          #4f8ef7;
+  --color-accent-deep:     #2355c9;
+  --color-accent-glow:     #3a6fd8;
+  --color-warm:            #e09b10;
+  --color-warm-deep:       #c47010;
+  --color-volt:            #7ab814;
+  --color-text:            #0e1120;
+  --color-text-muted:      #4a5070;
+  --color-text-disabled:   #9397b2;
+}
+
+/* Fallback: default to dark until JS sets the attribute */
+:root {
+  --color-bg:              #12141f;
+  --color-surface:         #1a1d2e;
+  --color-surface-raised:  #23273d;
+  --color-border:          #2e3450;
+  --color-accent:          #4f8ef7;
+  --color-accent-deep:     #2355c9;
+  --color-accent-glow:     #7ab0ff;
+  --color-warm:            #f7c948;
+  --color-warm-deep:       #e07b20;
+  --color-volt:            #c8f74f;
+  --color-text:            #f0f2ff;
+  --color-text-muted:      #8b90b0;
+  --color-text-disabled:   #555a78;
+}
+
+/* ── Reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #app {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--color-text);
+  /* Prevent text selection when clicking tiles quickly */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ── Panel (the sliding shade) ── */
+/*
+ * Base panel styles.  The `transition` duration is overridden by an inline
+ * style generated from the config's openingAnimation / closingAnimation
+ * duration values, so only the easing curve is set here as a fallback.
+ *
+ * The animation STYLE (slide vs fade) is driven by the `data-anim` attribute
+ * set by App.tsx based on `application.openingAnimation.type`:
+ *   data-anim="slide"  (default) — translateY(-100%) → translateY(0)
+ *   data-anim="fade"             — opacity 0          → opacity 1
+ */
+.panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+
+  /* Dark mode glassmorphism (default; overridden by inline style from config) */
+  background: linear-gradient(
+    180deg,
+    rgba(79, 142, 247, 0.18) 0%,
+    rgba(26, 29, 46, 0.92) 100%
+  );
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border-bottom: 1px solid rgba(122, 176, 255, 0.25);
+
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+}
+
+/* Light mode panel override */
+:root[data-theme="light"] .panel {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.82) 0%,
+    rgba(234, 236, 247, 0.95) 100%
+  );
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  border-bottom: 1px solid rgba(79, 142, 247, 0.30);
+}
+
+/* ── Animation: slide (default) ── */
+/* Panel starts above the viewport and slides down on open. */
+.panel[data-anim="slide"],
+.panel:not([data-anim]) {
+  transform: translateY(-100%);
+  opacity: 1;
+}
+.panel[data-anim="slide"].panel--open,
+.panel:not([data-anim]).panel--open {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ── Animation: fade ── */
+/* Panel stays at y=0 and fades in/out via opacity. */
+.panel[data-anim="fade"] {
+  transform: translateY(0);
+  opacity: 0;
+  /* Hide from pointer events while invisible so clicks don't land on it */
+  pointer-events: none;
+}
+.panel[data-anim="fade"].panel--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Drag handle ── */
+/* Thin strip at the panel's bottom edge; height is set by inline style
+   from application.handleThickness.  data-tauri-drag-region enables
+   native window dragging. */
+.panel__handle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(122, 176, 255, 0.15);
+  cursor: grab;
+  border-radius: 0 0 var(--handle-radius, 0) var(--handle-radius, 0);
+}
+.panel__handle:active {
+  cursor: grabbing;
+}
+
+
+
+/* ── Shortcut Grid ── */
+/* Grid container uses absolute positioning driven by dropshot.json — no flex layout here */
+.grid__error {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--color-warm-deep);
+  padding: 8px 12px;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+/* ── Shortcut Tile ── */
+/* Width, height, and position are set by inline styles from dropshot.json.
+   Only defaults that don't conflict with absolute layout are kept here. */
+.tile {
+  position: absolute; /* Required — x/y come from JSON */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 4px 6px;
+  border-radius: 14px;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  outline: none;
+}
+
+.tile:focus-visible {
+  outline: 2px solid var(--color-accent-glow);
+  outline-offset: 2px;
+}
+
+.tile__icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.tile__label {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}

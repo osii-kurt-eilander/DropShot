@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Google Chrome">
+  <!--
+    Chrome / browser icon — DropShot asset
+    Pure vector: no embedded raster data.
+    Three 120° donut segments + blue centre circle.
+
+    Geometry (centre 50,50):
+      Outer ring radius R = 44, inner radius r = 22.
+      Segment boundaries (SVG angle convention: 0 = right, clockwise positive):
+        12 o'clock = 270° → outer (50,  6),  inner (50, 28)
+         4 o'clock =  30° → outer (88, 72),  inner (69, 61)
+         8 o'clock = 150° → outer (12, 72),  inner (31, 61)
+      Each arc spans 120°, so large-arc-flag = 0.
+
+    Theme hints:
+      id="seg-red"    → Google Red   (#EA4335) segment
+      id="seg-green"  → Google Green (#34A853) segment
+      id="seg-yellow" → Google Yellow(#FBBC05) segment
+      id="centre"     → Google Blue  (#4285F4) circle
+      id="gap-ring"   → white separator ring (r=23 covers the donut seam)
+  -->
+
+  <!-- Red segment: 12 o'clock → 4 o'clock (clockwise) -->
+  <path id="seg-red"
+        d="M 50 6
+           A 44 44 0 0 1 88 72
+           L 69 61
+           A 22 22 0 0 0 50 28
+           Z"
+        fill="#EA4335"/>
+
+  <!-- Green segment: 4 o'clock → 8 o'clock (clockwise) -->
+  <path id="seg-green"
+        d="M 88 72
+           A 44 44 0 0 1 12 72
+           L 31 61
+           A 22 22 0 0 0 69 61
+           Z"
+        fill="#34A853"/>
+
+  <!-- Yellow segment: 8 o'clock → 12 o'clock (clockwise) -->
+  <path id="seg-yellow"
+        d="M 12 72
+           A 44 44 0 0 1 50 6
+           L 50 28
+           A 22 22 0 0 0 31 61
+           Z"
+        fill="#FBBC05"/>
+
+  <!-- White separator ring — covers the inner seam between segments -->
+  <circle id="gap-ring" cx="50" cy="50" r="23" fill="white"/>
+
+  <!-- Blue centre circle -->
+  <circle id="centre" cx="50" cy="50" r="17" fill="#4285F4"/>
+</svg>

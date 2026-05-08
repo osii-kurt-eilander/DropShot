@@ -1,0 +1,113 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# DropShot — Flatpak manifest
+# ─────────────────────────────────────────────────────────────────────────────
+# Build tool : flatpak-builder
+# Runtime    : org.freedesktop.Platform 23.08 (provides glibc, Wayland, etc.)
+# SDK        : org.freedesktop.Sdk 23.08
+#
+# Prerequisites (install once on the build machine):
+#   flatpak install flathub org.freedesktop.Platform//23.08
+#   flatpak install flathub org.freedesktop.Sdk//23.08
+#
+# The Makefile copies the compiled binary from bin/linux/ before invoking
+# flatpak-builder, so `make build-linux` must succeed first.
+#
+# User data path (production):
+#   ~/.var/app/com.dropshot.app/config/dropshot/dropshot.json
+#   (Tauri resolves app_config_dir() to this path inside the Flatpak sandbox)
+#
+# On first launch the wrapper script (dropshot-launch) seeds the default
+# dropshot.json from /app/share/dropshot/data/ if it doesn't yet exist.
+#
+# Build (run via Makefile — `make install-linux`):
+#   flatpak-builder --force-clean --repo=install/linux/repo \
+#       install/linux/build \
+#       src/installers/linux/com.dropshot.app.yml
+#   flatpak build-bundle install/linux/repo \
+#       install/linux/dropshot.flatpak com.dropshot.app
+# ─────────────────────────────────────────────────────────────────────────────
+
+app-id: com.dropshot.app
+
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+
+# The entry point is the wrapper script that seeds data on first run
+command: dropshot-launch
+
+# ── Sandbox permissions ───────────────────────────────────────────────────────
+finish-args:
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --share=ipc
+  - --device=dri
+  - --share=network
+  - --filesystem=home:ro
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.portal.OpenURI
+  - --talk-name=org.freedesktop.portal.Desktop
+
+# ── Modules ───────────────────────────────────────────────────────────────────
+modules:
+  - name: dropshot
+    buildsystem: simple
+    build-commands:
+      # Install the main binary
+      - install -Dm755 dropshot /app/bin/dropshot
+
+      # Install the first-run wrapper script
+      - install -Dm755 dropshot-launch /app/bin/dropshot-launch
+
+      # Bundle the default data files — the wrapper copies these to the user's
+      # XDG config dir ($XDG_CONFIG_HOME/dropshot/) on first launch.
+      - install -Dm644 data/dropshot.json /app/share/dropshot/data/dropshot.json
+
+      # Install the desktop entry
+      - install -Dm644 com.dropshot.app.desktop /app/share/applications/com.dropshot.app.desktop
+
+      # Install icons
+      - install -Dm644 icons/32x32.png   /app/share/icons/hicolor/32x32/apps/com.dropshot.app.png
+      - install -Dm644 icons/128x128.png /app/share/icons/hicolor/128x128/apps/com.dropshot.app.png
+      - install -Dm644 icons/256x256.png /app/share/icons/hicolor/256x256/apps/com.dropshot.app.png
+
+    sources:
+      - type: file
+        path: ../../../bin/linux/dropshot
+        dest-filename: dropshot
+
+      # First-run wrapper: seeds ~/.var/app/com.dropshot.app/config/dropshot/
+      # if it doesn't exist, then exec the real binary.
+      - type: inline
+        filename: dropshot-launch
+        contents: |
+          #!/bin/sh
+          CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/dropshot"
+          DEFAULT_DATA="/app/share/dropshot/data"
+          if [ ! -f "$CONFIG_DIR/dropshot.json" ]; then
+            mkdir -p "$CONFIG_DIR"
+            cp "$DEFAULT_DATA/dropshot.json" "$CONFIG_DIR/dropshot.json"
+          fi
+          exec /app/bin/dropshot "$@"
+
+      - type: dir
+        path: ../../../data
+        dest: data
+
+      - type: inline
+        filename: com.dropshot.app.desktop
+        contents: |
+          [Desktop Entry]
+          Name=DropShot
+          Comment=Quake-style app launcher — drop shot your favourite apps
+          Exec=dropshot-launch
+          Icon=com.dropshot.app
+          Type=Application
+          Categories=Utility;
+          Keywords=launcher;hotkey;shortcut;
+          NoDisplay=true
+
+      - type: dir
+        path: ../../../src-tauri/icons
+        dest: icons

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Visual Studio Code">
+  <!--
+    Visual Studio Code icon — DropShot asset
+    Pure vector: no embedded raster data.
+    Palette: background #007ACC (VS Code blue), symbol white.
+    Theme hint: recolour <rect id="bg"> and stroke on <g id="symbol">.
+  -->
+
+  <!-- Background: VS Code signature blue with rounded corners -->
+  <rect id="bg" width="100" height="100" rx="16" fill="#007ACC"/>
+
+  <!-- Code symbol: < / > -->
+  <g id="symbol" fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="7.5">
+    <!-- Left angle bracket < -->
+    <polyline id="left-bracket"  points="41,27 21,50 41,73"/>
+    <!-- Right angle bracket > -->
+    <polyline id="right-bracket" points="59,27 79,50 59,73"/>
+    <!-- Forward slash / -->
+    <line     id="slash"         x1="57" y1="23" x2="43" y2="77"/>
+  </g>
+</svg>

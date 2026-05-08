@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Terminal">
+  <!--
+    Terminal / Windows Terminal icon — DropShot asset
+    Pure vector: no embedded raster data.
+    Classic >_ prompt on a dark background.
+
+    Theme hints:
+      id="bg"     → background rect (recolour for light themes)
+      id="caret"  → the > chevron stroke
+      id="cursor" → the _ underline cursor stroke
+      stroke on #caret and #cursor controls the text colour
+  -->
+
+  <!-- Background: near-black with slight blue tint and rounded corners -->
+  <rect id="bg" width="100" height="100" rx="14" fill="#0C0E14"/>
+
+  <!-- Thin scanline highlight at top (optional, remove for flat themes) -->
+  <rect x="0" y="0" width="100" height="18" rx="14" fill="white" opacity="0.04"/>
+
+  <!-- > prompt chevron -->
+  <polyline id="caret"
+            points="16,36 35,50 16,64"
+            fill="none"
+            stroke="#61D855"
+            stroke-width="7"
+            stroke-linecap="round"
+            stroke-linejoin="round"/>
+
+  <!-- _ cursor underline -->
+  <line id="cursor"
+        x1="42" y1="66"
+        x2="78" y2="66"
+        stroke="#61D855"
+        stroke-width="7"
+        stroke-linecap="round"/>
+</svg>

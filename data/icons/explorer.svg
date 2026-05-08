@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="File Explorer">
+  <!--
+    File Explorer / folder icon — DropShot asset
+    Pure vector: no embedded raster data.
+    Classic two-tone folder shape: tab (lighter) + body (amber).
+
+    Path construction:
+      The folder is drawn as a single closed path that traces:
+        left edge → tab top-left curve → tab top → tab top-right curve →
+        diagonal join to body top → body top-right curve → right edge →
+        body bottom-right curve → bottom → body bottom-left curve → back up.
+      A lighter overlay then fills just the tab portion.
+
+    Theme hints:
+      id="folder-body" → main amber fill (#FFB300)
+      id="folder-tab"  → lighter yellow overlay on tab area (#FFCA28)
+      id="shine"       → optional top-edge highlight strip
+  -->
+
+  <!-- Full folder outline: tab + body as one path -->
+  <path id="folder-body"
+        d="M 6 40
+           L 6 30
+           Q 6 22 13 22
+           L 40 22
+           Q 47 22 50 28
+           L 53 35
+           L 88 35
+           Q 95 35 95 42
+           L 95 80
+           Q 95 87 88 87
+           L 12 87
+           Q 6 87 6 80
+           Z"
+        fill="#FFB300"/>
+
+  <!-- Tab overlay: same path clipped to the tab area, lighter colour -->
+  <path id="folder-tab"
+        d="M 6 40
+           L 6 30
+           Q 6 22 13 22
+           L 40 22
+           Q 47 22 50 28
+           L 53 35
+           L 6 35
+           Z"
+        fill="#FFCA28"/>
+
+  <!-- Subtle top-edge shine strip on the body for depth -->
+  <rect id="shine"
+        x="6" y="35" width="89" height="9"
+        rx="3"
+        fill="white"
+        opacity="0.12"/>
+</svg>
