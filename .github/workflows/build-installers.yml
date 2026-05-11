@@ -145,7 +145,7 @@ jobs:
             --repo=install/linux/repo \
             install/linux/build \
             src/installers/linux/com.dropshot.app.yml
-          flatpak --user build-bundle install/linux/repo \
+          flatpak build-bundle install/linux/repo \
             install/linux/dropshot.flatpak \
             com.dropshot.app
 
