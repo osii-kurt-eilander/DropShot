@@ -309,7 +309,7 @@ fn seed_default_config(
             .map_err(|e| format!("Failed to seed config from {:?}: {}", bundled, e))?;
     } else {
         // Hard-coded fallback so the app always starts, even if resource bundling fails.
-        let default_json = r#"{
+        let default_json = r##"{
   "version": "1.0",
   "application": {
     "menuSize": { "width": 1920, "height": 120 },
@@ -328,7 +328,7 @@ fn seed_default_config(
     "click":     { "scale": 0.94, "duration": 60 }
   },
   "shortcuts": []
-}"#;
+}"##;
         std::fs::write(dest, default_json)
             .map_err(|e| format!("Failed to write default config: {}", e))?;
     }
