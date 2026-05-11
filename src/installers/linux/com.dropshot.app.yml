@@ -2,12 +2,12 @@
 # DropShot — Flatpak manifest
 # ─────────────────────────────────────────────────────────────────────────────
 # Build tool : flatpak-builder
-# Runtime    : org.freedesktop.Platform 23.08 (provides glibc, Wayland, etc.)
-# SDK        : org.freedesktop.Sdk 23.08
+# Runtime    : org.freedesktop.Platform 24.08 (provides glibc, Wayland, etc.)
+# SDK        : org.freedesktop.Sdk 24.08
 #
 # Prerequisites (install once on the build machine):
-#   flatpak install flathub org.freedesktop.Platform//23.08
-#   flatpak install flathub org.freedesktop.Sdk//23.08
+#   flatpak install flathub org.freedesktop.Platform//24.08
+#   flatpak install flathub org.freedesktop.Sdk//24.08
 #
 # The Makefile copies the compiled binary from bin/linux/ before invoking
 # flatpak-builder, so `make build-linux` must succeed first.
@@ -30,7 +30,7 @@
 app-id: com.dropshot.app
 
 runtime: org.freedesktop.Platform
-runtime-version: '23.08'
+runtime-version: '24.08'
 sdk: org.freedesktop.Sdk
 
 # The entry point is the wrapper script that seeds data on first run
@@ -80,7 +80,7 @@ modules:
       # First-run wrapper: seeds ~/.var/app/com.dropshot.app/config/dropshot/
       # if it doesn't exist, then exec the real binary.
       - type: inline
-        filename: dropshot-launch
+        dest-filename: dropshot-launch
         contents: |
           #!/bin/sh
           CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/dropshot"
@@ -96,7 +96,7 @@ modules:
         dest: data
 
       - type: inline
-        filename: com.dropshot.app.desktop
+        dest-filename: com.dropshot.app.desktop
         contents: |
           [Desktop Entry]
           Name=DropShot
